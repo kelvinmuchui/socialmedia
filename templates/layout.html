@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<title>Lunch</title>
+</head>
+<body>
+
+<nav>
+  <a href = "{{ url_for('logout') }}" title = "Sign Out">Sign Out</a>
+  <a href = "{{ url_for('login') }}" title = "Sign In">Sign In</a>
+  <a href = "{{ url_for('register') }}" title = "Sign Up">Sign Up</a>
+</nav>
+
+<div class="messages">
+{% with messages = get_flashed_messages() %}
+{% for message in messages %}
+<div>{{ message }}</div>
+{% endfor %}
+{% endwith %}
+</div>
+
+{% block content %}{% endblock %}
+</body>
+</html>

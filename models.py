@@ -20,7 +20,7 @@ class User(UserMixin, Model):
 		order_by = ('-joined_at',)
 
 	def get_posts(self):
-		return Post.select().wher(Post.user == self)
+		return Post.select().where(Post.user == self)
 
 	def get_stream(self):
 		return Post.select().where(
@@ -55,7 +55,7 @@ class Post(Model):
 
 def initialize():
 	DATABASE.connect()
-	DATABASE.create_tables([User], safe = True)
+	DATABASE.create_tables([User, Post], safe = True)
 	DATABASE.close()
 
 

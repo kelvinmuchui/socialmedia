@@ -13,14 +13,14 @@
             <a href="{{ url_for('index') }}" class="icon-logo"></a>
         </div>
          <div class="small-3 columns">
-           <h1> Hello {% if current_user.is_authenticated %} {{ current_user.username}}{% endif %}</h1>
+           <h1>   Hello {% if current_user.is_authenticated %} {{ current_user.username }} {% endif %} </h1>
         </div>
             <div class="small-3 columns">
                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('logout') }}" class="icon-power" title="Log out"> </a>
+                <a href="{{ url_for('logout') }}" class="icon-power" title="Log out"> logout </a>
                 {% else %}
-                 <a href="{{ url_for('login') }}" class="icon-power" title="Log in"> </a>
-                 <a href="{{ url_for('register') }}" class="icon-profile" title="Register"> </a>
+                 <a href="{{ url_for('login') }}" class="icon-power" title="Log in">login </a>
+                 <a href="{{ url_for('register') }}" class="icon-profile" title="Register">Register </a>
                 {% endif %}
         </div>
 

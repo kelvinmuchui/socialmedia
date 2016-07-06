@@ -2,7 +2,7 @@ from flask import(Flask, g, render_template, flash, redirect,url_for)
 from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, logout_user,
 	login_required, current_user)
-
+from flask.ext.login import AnonymousUserMixin
 import forms 
 from forms import User
 import models
@@ -17,7 +17,7 @@ app.secret_key = 'muchuikelvin'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.log_view = 'login'
+login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(userid):
@@ -46,7 +46,7 @@ def register():
 	form = forms.RegisterForm()
 	if form.validate_on_submit():
 		flash('you registered',"success")
-		models.User.create_user(
+		models.User.create_User(
 			username = form.username.data,
 			email = form.email.data,
 			password = form.password.data)
@@ -64,7 +64,7 @@ def login():
 
 		else:
 			if check_password_hash(user.password, form.password.data):
-				load_user(user)
+				login_user(user)
 				flash("you have been loged in")
 				return redirect(url_for('index'))
 			else:
@@ -79,7 +79,7 @@ def logout():
 	return redirect(url_for('index'))
 
 @app.route('/new_post', methods = ('GET', 'POST' ))
-#@login_required
+@login_required
 def post():
 	form = forms.PostForm()
 	if form.validate_on_submit():
@@ -91,8 +91,30 @@ def post():
 
 @app.route('/')
 def index():
-	return'Hey'
+	stream = models.Post.select().limit(100)
+	return render_template('stream.html', stream=stream)
 
+
+    
+@login_required
+@app.route('/stream')
+@app.route('/stream/<username>')
+def stream(username=None):
+    template = 'stream.html'
+    if username and username != current_user.username:
+        try:
+            user = models.User.select().where(
+                models.User.username**username).get()
+        except models.DoesNotExist:
+            abort(404)
+        else:
+            stream = user.posts.limit(100)
+    else:
+        stream = current_user.get_stream().limit(100)
+        user = current_user
+    if username:
+        template = 'user_stream.html'
+    return render_template(template, stream=stream, user=user)
 if __name__ == '__main__':
 	models.initialize()
 	try:
@@ -105,6 +127,6 @@ if __name__ == '__main__':
 			)
 	except ValueError:
 		pass
-    
+
 	app.run(debug = DEBUG, host = HOST, port = PORT)
 

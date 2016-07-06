@@ -115,6 +115,13 @@ def stream(username=None):
     if username:
         template = 'user_stream.html'
     return render_template(template, stream=stream, user=user)
+
+@app.route('/post/<int:post_id>')
+def view_post(post_id):
+  posts = models.Post.select().where(models.Post.id == post_id)
+  if posts.count() == 0:
+      abort(404)
+  return render_template('stream.html', stream=posts)
 if __name__ == '__main__':
 	models.initialize()
 	try:

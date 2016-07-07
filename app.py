@@ -115,6 +115,42 @@ def stream(username=None):
     if username:
         template = 'user_stream.html'
     return render_template(template, stream=stream, user=user)
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+	try:
+		to_user = models.User.get(models.User.username**username)
+	except models.DoesNotExist:
+		pass
+	else:
+		try:
+			models.Relationship.create(
+				from_useer = g.user._get_current_object(),
+				to_user = to_user) 
+		except models.InegrityError:
+			pass
+		else:
+			flash("You're now Following {}!".format(to_user.username), "success")
+	return redirect(url_for(' stream', username = to_user.username))
+
+@app.route('/unfollow/<username>')
+@login_required
+def follow(username):
+	try:
+		to_user = models.User.get(models.User.username**username)
+	except models.DoesNotExist:
+		pass
+	else:
+		try:
+			models.Relationship.get(
+				from_user = g.user._get_current_object(),
+				to_user = to_user).delete_instance()
+		except models.InegrityError:
+			pass
+		else:
+			flash("You've unfollowed {}!".format(to_user.username), "success")
+		return redirect(url_for(' stream', username = to_user.username))
+
 
 @app.route('/post/<int:post_id>')
 def view_post(post_id):
@@ -125,6 +161,7 @@ def view_post(post_id):
 if __name__ == '__main__':
 	models.initialize()
 	try:
+
 		models.User.create_User(
 			username = 'kelvin',
 			email = 'muchuikelvin423@gmail.com',

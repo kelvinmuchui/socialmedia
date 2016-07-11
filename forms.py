@@ -47,5 +47,5 @@ class RegisterForm(Form):
 class LoginForm(Form):
 	email = StringField('Email', validators = [DataRequired(), Email()])
 	password = PasswordField('Password', validators = [DataRequired()])
-class PostForm(Form):
-  content = TextAreaField("what's app", validators=[DataRequired()])
+class CommentForm(Form):
+  content = TextAreaField("", validators=[DataRequired()])

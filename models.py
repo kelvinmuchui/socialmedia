@@ -6,7 +6,7 @@ from flask.ext.login import UserMixin
 
 from peewee import *
 
-DATABASE = peewee.PostgresqlDatabase('network', user="postgres")
+DATABASE =PostgresqlDatabase('network', user="postgres")
 class User(UserMixin, Model):
 	username = CharField(unique =True)
 	email = CharField(unique = True)
